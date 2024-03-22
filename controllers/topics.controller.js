@@ -175,6 +175,7 @@ const downVoteCount = async (req, res) => {
 const importCSV = async (req, res) => {
     const { topicNameEnglish, topicNameVietnamese, descriptionEnglish, descriptionVietnamese, vocabularyList, isPublic} = req.body;
     const userId = req.user.data._id;
+    console.log(req.body);
     try {
         let topic = await Topic.create({
             topicNameEnglish,
@@ -192,8 +193,10 @@ const importCSV = async (req, res) => {
             topic.vocabularyId.push(vocab._id);
         }
         await topic.save();
+        console.log(topic);
         res.status(200).json({ message: 'Import data successfully', topic});
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error : error.message });
     }
 }

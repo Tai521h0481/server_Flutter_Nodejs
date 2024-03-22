@@ -43,7 +43,7 @@ topicsRouter.put("/:id", authentication, isExistId(Topic), updateTopic);
 // delete topic (tested)
 topicsRouter.delete("/:id", authentication, isExistId(Topic), deleteTopic)
 // create vocab in topic (tested)
-topicsRouter.post("/:id/vocabularies", authentication, isExistId(Topic), validateInput(["englishWord", "vietnameseWord", "englishMeaning", "vietnameseMeaning"]), createVocabularyInTopic);
+topicsRouter.post("/:id/vocabularies", authentication, isExistId(Topic), createVocabularyInTopic);
 // delete a vocab from topic (tested)
 topicsRouter.delete("/:id/vocabularies/:vocabularyId", authentication, isExistId(Topic), checkId(Vocabulary, "vocabularyId"), deleteVocabularyInTopic);
 // edit vocab from topic (tested)
@@ -53,7 +53,7 @@ topicsRouter.put("/upvote/:id", authentication, isExistId(Topic), upVoteCount);
 // down vote topic (tested)
 topicsRouter.put("/downvote/:id", authentication, isExistId(Topic), downVoteCount);
 // import csv (tested)
-topicsRouter.post("/import-csv", authentication, validateInput(['topicNameEnglish', 'topicNameVietnamese', 'descriptionEnglish', 'descriptionVietnamese', 'vocabularyList']), importCSV);
+topicsRouter.post("/import-csv", authentication, importCSV);
 // export csv (tested)
 topicsRouter.get("/export-csv/:id",authentication, isExistId(Topic), exportCSV);
 // get folder by topic id (tested)
