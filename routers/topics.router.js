@@ -26,10 +26,10 @@ const {getTopicById,
 
 // get all topics (tested)
 topicsRouter.get("/", getAllTopics);
+// get topics by user id (tested)
+topicsRouter.get("/get-topic-user", authentication, getTopicsByUserId);
 // get topic by id (tested)
 topicsRouter.get("/:id", authentication ,isExistId(Topic), getTopicById);
-// get topics by user id (tested)
-topicsRouter.get("/users/:id", authentication, isExistId(Users), getTopicsByUserId);
 // get topics by folder id (tested)
 topicsRouter.get("/folders/:folderId", getTopicsByFolderId);
 // view topic is public of user (tested)
