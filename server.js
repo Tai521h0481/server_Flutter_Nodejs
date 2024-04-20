@@ -4,10 +4,18 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const rootRouter = require('./routers');
 const cors = require('cors');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
+
+app.use(express.static(path.join(__dirname, 'views')));
+
 app.use(express.json()); 
 app.use(cors());
 app.use("/android", rootRouter);
+
+app.get('/change-password', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'change-password.html'));
+});
+
 const {MONGO_URL} = process.env;
 
 mongoose.connect(MONGO_URL)

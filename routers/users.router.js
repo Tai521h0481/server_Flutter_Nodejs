@@ -15,7 +15,8 @@ const { createUser, addAchieveToUser,
         passwordRecovery,
         getAllUsers,
         getUserById,
-        getTopicByUser } = require('../controllers/users.controller');
+        getTopicByUser,
+        recover_changePassword } = require('../controllers/users.controller');
 
 // create Account (tested)
 usersRouter.post('/register', validateInput(['email', 'password']), isCreated(Users), createUser);
@@ -23,6 +24,8 @@ usersRouter.post('/register', validateInput(['email', 'password']), isCreated(Us
 usersRouter.post('/login', validateInput(['email', 'password']), login);
 // password recovery (tested)
 usersRouter.post('/recover-password', validateInput(['email']), isExistEmail(Users), passwordRecovery);
+// change password in web
+usersRouter.post('/recover-password/change-password/:id', validateInput(['newPassword']), isExistEmail(Users), recover_changePassword);
 // update to premium (tested)
 usersRouter.put('/profiles/update-premium/:id', authentication, isExistId(Users), updatePremium);
 // change password (tested)
