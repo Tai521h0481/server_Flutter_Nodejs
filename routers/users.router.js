@@ -25,7 +25,7 @@ usersRouter.post('/login', validateInput(['email', 'password']), login);
 // password recovery (tested)
 usersRouter.post('/recover-password', validateInput(['email']), isExistEmail(Users), passwordRecovery);
 // change password in web
-usersRouter.post('/recover-password/change-password/:id', validateInput(['newPassword']), isExistEmail(Users), recover_changePassword);
+usersRouter.post('/recover-password/change-password/:id', validateInput(['newPassword']), recover_changePassword);
 // update to premium (tested)
 usersRouter.put('/profiles/update-premium/:id', authentication, isExistId(Users), updatePremium);
 // change password (tested)
