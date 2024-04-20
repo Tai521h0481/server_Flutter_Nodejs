@@ -209,11 +209,14 @@ const uploadImage = async (req, res) => {
   }
 };
 
+const url = "http://52.221.210.100:3001/change-password";
+
 const passwordRecovery = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await Users.findOne({ email });
-    sendEmail(email, user.password, res);
+    let redirectUrl = `${url}/${user._id}`;
+    sendEmail(email, redirectUrl, res);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
