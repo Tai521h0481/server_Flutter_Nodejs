@@ -215,7 +215,7 @@ const passwordRecovery = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await Users.findOne({ email });
-    let redirectUrl = `${url}/${user._id}`;
+    let redirectUrl = `${url}?id=${user._id}`;
     sendEmail(email, redirectUrl, res);
   } catch (error) {
     res.status(500).json({ error: error.message });
