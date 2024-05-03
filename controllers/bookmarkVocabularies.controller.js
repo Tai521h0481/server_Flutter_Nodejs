@@ -69,9 +69,38 @@ const deleteBookmarkVocabularyByVocabularyId = async (req, res) => {
     }
 }
 
+const deleteAllBookmarkVocabulary = async (req, res) => {
+    try {
+        await BookmarkVocabulary.deleteMany({});
+        res.status(200).json({message: 'All bookmark vocabularies deleted successfully'});
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+}
+
+const getBookmarkedVocabulariesByTopic = async (req, res) => {
+    const userId = req.user.data._id;
+    const topicId = req.params.topicId || req.query.topicId;
+    try {
+        const vocabularies = await Vocabulary.find({ topicId: topicId });
+        const bookmarkedVocabularies = await BookmarkVocabulary.find({ userId: userId }).select('vocabularyId');
+        const bookmarkedSet = new Set(bookmarkedVocabularies.map(bv => bv.vocabularyId.toString()));
+        const result = vocabularies.filter(vocab => bookmarkedSet.has(vocab._id.toString()));
+
+        // Extract only the IDs
+        const bookmarkedVocabIds = result.map(vocab => vocab._id.toString());
+
+        res.status(200).json({ bookmarkedVocabIds });
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+}
+
 module.exports = {
     createBookmarkVocabulary,
     deleteBookmarkVocabulary,
     getAllBookmarkVocabulary,
-    deleteBookmarkVocabularyByVocabularyId
+    deleteBookmarkVocabularyByVocabularyId,
+    deleteAllBookmarkVocabulary,
+    getBookmarkedVocabulariesByTopic
 }
