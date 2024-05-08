@@ -100,30 +100,44 @@ const updateTopic = async (req, res) => {
 const deleteTopic = async (req, res) => {
   const topicId = req.params.id || req.query.id;
   const userId = req.user.data._id;
+
   try {
     const topic = await Topic.findById(topicId).populate("vocabularyId");
     if (!topic) {
       return res.status(404).json({ message: "Topic not found" });
     }
+
     for (let vocab of topic.vocabularyId) {
       await BookmarkVocabulary.deleteMany({ vocabularyId: vocab._id, userId });
       await VocabularyStatistic.deleteMany({ vocabularyId: vocab._id, userId });
     }
-    // Người dùng là chủ sở hữu của topic, xóa topic và tất cả các tham chiếu liên quan
+
+    // Lấy tất cả các bản ghi TopicInFolder liên quan
+    const topicInFolders = await TopicInFolder.find({ topicId });
+
+    // Cập nhật từng Folder để loại bỏ topic khỏi danh sách
+    for (let topicInFolder of topicInFolders) {
+      await Folder.findByIdAndUpdate(
+        topicInFolder.folderId,
+        {
+          $pull: { topicInFolderId: topicInFolder._id },
+          $inc: { topicCount: -1 },
+        }
+      );
+    }
+
+    // Xóa tất cả các bản ghi TopicInFolder liên quan
     await TopicInFolder.deleteMany({ topicId });
+
+    // Xóa các tham chiếu khác liên quan đến topic
     await BookmarkTopic.deleteMany({ topicId });
     await LearningStatistics.deleteMany({ topicId, userId });
     await Vocabulary.deleteMany({ topicId });
-    await Users.updateMany({}, { $pull: { topicId } }); // Xóa topic khỏi tất cả người dùng
+    await Users.updateMany({}, { $pull: { topicId } });
+
+    // Cuối cùng, xóa chủ đề (topic)
     await Topic.findByIdAndDelete(topicId);
-    const idTopicInFolder = await TopicInFolder.findOne({ topicId });
-    await Folder.findOneAndUpdate(
-      { topicInFolderId: idTopicInFolder },
-      {
-        $pull: { topicInFolderId: idTopicInFolder },
-        $inc: { topicCount: -1 },
-      }
-    );
+
     res.status(200).json({ message: "Delete topic successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
