@@ -116,10 +116,13 @@ const deleteTopic = async (req, res) => {
     await Vocabulary.deleteMany({ topicId });
     await Users.updateMany({}, { $pull: { topicId } }); // Xóa topic khỏi tất cả người dùng
     await Topic.findByIdAndDelete(topicId);
-    await Folder.findByIdAndUpdate(topicId, {
-      $pull: { topicId },
-      $inc: { topicCount: -1 },
-    });
+    await Folder.findOneAndUpdate(
+      { topicInFolderId: topicId },
+      {
+        $pull: { topicInFolderId: topicId },
+        $inc: { topicCount: -1 },
+      }
+    );
     res.status(200).json({ message: "Delete topic successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
