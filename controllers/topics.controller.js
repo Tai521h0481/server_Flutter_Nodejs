@@ -116,10 +116,11 @@ const deleteTopic = async (req, res) => {
     await Vocabulary.deleteMany({ topicId });
     await Users.updateMany({}, { $pull: { topicId } }); // Xóa topic khỏi tất cả người dùng
     await Topic.findByIdAndDelete(topicId);
+    const idTopicInFolder = await TopicInFolder.findOne({ topicId });
     await Folder.findOneAndUpdate(
-      { topicInFolderId: topicId },
+      { topicInFolderId: idTopicInFolder },
       {
-        $pull: { topicInFolderId: topicId },
+        $pull: { topicInFolderId: idTopicInFolder },
         $inc: { topicCount: -1 },
       }
     );
