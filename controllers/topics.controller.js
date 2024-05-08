@@ -61,12 +61,8 @@ const getFolderByTopicId = async (req, res) => {
       return;
     }
 
-    let folders = [];
-    for (let folderId of topic.folderId) {
-      const folder = await Folder.findById(folderId);
-      folders.push(folder);
-    }
-    res.status(200).json({ folders });
+    const folderIds = topic.folderId.map(folder => folder.toString());
+    res.status(200).json({ folderIds });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
