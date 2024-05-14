@@ -65,11 +65,13 @@ const getProcessLearning = async (req, res) => {
 const getAllStatisticsForTopic = async (req, res) => {
     const {topicId} = req.params;
     try {
-        const learningStatistic = await LearningStatistics.find({topicId}).populate("userId");
+        const learningStatistic = await LearningStatistics.find({topicId})
+                                                          .populate("userId")
+                                                          .sort({learningPercentage: -1});
         return res.status(200).json({learningStatistic});
     }
     catch(error){
-        return res.status(500).json({error: error.message})
+        return res.status(500).json({error: error.message});
     }
 }
 
