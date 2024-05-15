@@ -2,6 +2,7 @@ const gravatar = require("gravatar");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const { Users } = require("../models");
+const IP = process.env.IP || "localhost";
 
 const { TOKEN_TIME, TOKEN_SECRET_KEY } = process.env;
 const avatarSize = process.env.avatarSize;
@@ -209,7 +210,7 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const url = "http://52.221.210.100:3001/change-password";
+const url = `http://${IP}:3001/change-password`;
 
 const passwordRecovery = async (req, res) => {
   const { email } = req.body;
